@@ -1,0 +1,103 @@
+/* style3.css
+   Name: Gabriela Palma
+   Date Created: March 29, 2025
+   Date Updated: April 9, 2025
+*/
+
+body {
+  margin: 0;
+  /* reserve space for sticky header and fixed footer */
+  padding-bottom: 4rem; /* adjust to your footer’s height */
+
+  background-color: lightblue;
+  font-family: "Times New Roman", serif;
+  text-align: center;
+}
+
+/* Sticky header at top */
+header {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  background-color: lightblue; /* match body or your design */
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* General form styling */
+form {
+  background: #fff;
+  border-radius: 20px;
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+label,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+  display: block;
+  margin: 0.75rem 0;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+textarea,
+select {
+  width: 95%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* flex container example  */
+.container {
+  display: flex;
+  gap: 1rem;
+}
+
+/* error messages */
+.error {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+  text-align: left;
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* IFrame section styling */
+#iframe-section {
+  margin: 2rem 0;
+}
+
+#info-frame {
+  width: 100%;
+  height: 300px; 
+  border: none;
+}
+
+/* Fixed footer at bottom */
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  padding: 1rem 0;
+  text-align: center;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+#info-frame {
+  width: 300px;
+  height: 300px; 
+  border: none;
+}

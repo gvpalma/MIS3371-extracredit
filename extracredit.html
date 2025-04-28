@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Heart Health Clinic Signup</title>
+    <link rel="stylesheet" href="style4.css" />
+    <style>
+      /* Make sure errors appear in red */
+      .error {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <table width="100%">
+        <tr>
+          <td valign="top" align="left" width="20%">
+            <div class="image">
+              <img
+                id="logo"
+                src="hearthealthlogo.jpg"
+                alt="Heart Health Logo"
+                style="width: 150px; height: 150px"
+              />
+            </div>
+          </td>
+          <td align="center"><h1>Heart Health Clinic</h1></td>
+          <td valign="bottom" align="right" width="20%">
+            <p>Today's Date: <span id="today"></span></p>
+          </td>
+        </tr>
+      </table>
+      <h2>Please fill out this form:</h2>
+      <!-- new: dynamic greeting goes here -->
+      <div id="greeting" style="margin-bottom: 1rem; font-weight: bold"></div>
+    </header>
+  
+    <form action="homework4-thankyou.html"
+      id="signup"
+      onsubmit="return handleSubmit()"
+    >
+      <fieldset>
+        <legend>Personal Information</legend>
+
+        <label for="firstname">First name:</label>
+        <input
+          type="text"
+          id="firstname"
+          name="firstname"
+          minlength="1"
+          maxlength="30"
+          required
+          placeholder="Enter your first name"
+          pattern="[a-zA-Z']{1,30}"
+          title="Letters, apostrophes, and dashes only"
+          onblur="validateFirstname()"
+        />
+        <span class="error" id="firstname-error"></span>
+        <br />
+
+        <label for="middleinit">Middle Initial:</label>
+        <input
+          type="text"
+          id="middleinit"
+          name="middleinit"
+          maxlength="1"
+          placeholder="Enter your middle initial"
+          title="Letters only"
+          pattern="[a-zA-Z']{0,1}"
+          onblur="validateMiddleinit()"
+        />
+        <span class="error" id="middleinit-error"></span>
+        <br />
+
+        <label for="lastname">Last name:</label>
+        <input
+          type="text"
+          id="lastname"
+          name="lastname"
+          minlength="1"
+          maxlength="30"
+          required
+          placeholder="Enter your last name"
+          pattern="[a-zA-Z']{1,30}"
+          title="Letters, apostrophes, and dashes only"
+          onblur="validateLastname()"
+        />
+        <span class="error" id="lastname-error"></span>
+        <br />
+
+        <label for="dob">Date of Birth:</label>
+        <input
+          type="date"
+          id="dob"
+          name="dob"
+          onblur="validateDob()"
+          required
+        />
+        <span class="error" id="dob-error"></span>
+        <br />
+
+        <label for="ssn">SSN:</label>
+        <input
+          type="password"
+          id="ssn"
+          name="ssn"
+          minlength="9"
+          maxlength="11"
+          required
+          placeholder="Enter your SSN"
+          title="Numbers only"
+          onblur="validateSsn()"
+        />
+        <span class="error" id="ssn-error"></span>
+      </fieldset>
+
+      <fieldset>
+        <legend>Contact Information</legend>
+
+        <label for="addr1">Address Line 1:</label>
+        <input
+          type="text"
+          id="addr1"
+          name="addr1"
+          maxlength="30"
+          placeholder="Enter your address"
+          required
+          onblur="validateAddr1()"
+        />
+        <span class="error" id="addr1-error"></span>
+        <br />
+
+        <label for="addr2">Address Line 2:</label>
+        <input
+          type="text"
+          id="addr2"
+          name="addr2"
+          maxlength="30"
+          placeholder="Enter your address"
+        />
+        <span class="error" id="addr2-error"></span>
+        <br />
+
+        <label for="pnumber">Phone Number:</label>
+        <input
+          type="tel"
+          id="pnumber"
+          name="pnumber"
+          placeholder="123-456-7890"
+          pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+          onblur="validatePnumber()"
+          required
+        />
+        <span class="error" id="pnumber-error"></span>
+        <br />
+
+        <label for="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Enter your email address"
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,20}$"
+          onblur="validateEmail()"
+          required
+        />
+        <span class="error" id="email-error"></span>
+        <br />
+
+        <label for="city">City:</label>
+        <input
+          type="text"
+          id="city"
+          name="city"
+          placeholder="Enter your city"
+          required
+          onblur="validateCity()"
+        />
+        <span class="error" id="city-error"></span>
+        <br />
+
+        <label for="state">State:</label>
+        <input
+          list="states"
+          name="state"
+          id="state"
+          placeholder="Choose your state"
+          onblur="validateState()"
+        />
+        <datalist id="states">
+          <option value="AL">Alabama</option>
+          <option value="AK">Alaska</option>
+          <option value="AZ">Arizona</option>
+          <!-- ... other states omitted for brevity ... -->
+          <option value="WY">Wyoming</option>
+        </datalist>
+        <span class="error" id="state-error"></span>
+        <br />
+
+        <label for="zip">Zip Code:</label>
+        <input
+          type="text"
+          id="zip"
+          name="zip"
+          placeholder="Enter your zip code"
+          pattern="^\d{5}(-\d{4})?$"
+          onblur="validateZip()"
+          required
+        />
+        <span class="error" id="zip-error"></span>
+      </fieldset>
+
+      <fieldset>
+        <legend>Account Information</legend>
+        <div class="row">
+          <div>
+            <label for="userid">Create your Username:</label>
+            <input
+              type="text"
+              name="userid"
+              id="userid"
+              maxlength="20"
+              required
+              onblur="validateUserid()"
+            />
+            <span class="error" id="userid-error"></span>
+            <br />
+
+            <label for="pword">Create your Password:</label>
+            <input
+              type="password"
+              name="pword"
+              id="pword"
+              maxlength="10"
+              required
+              onblur="validatePword()"
+              oninput="validatePword()"
+              onfocus="validatePword()"
+            />
+            <span class="error" id="pword-error"></span>
+            <br />
+
+            <label for="con_pword">Re-enter your password:</label>
+            <input
+              type="password"
+              name="con_pword"
+              id="con_pword"
+              maxlength="10"
+              required
+              onblur="confirmPword()"
+              oninput="confirmPword()"
+              onfocus="confirmPword()"
+            />
+            <span class="error" id="pword2-error"></span>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Additional Information</legend>
+        <div class="row">
+          <label>Gender:</label>
+          <input type="radio" id="female" name="gender" value="Female" />
+          <label for="female">Female</label>
+          <input type="radio" id="male" name="gender" value="Male" />
+          <label for="male">Male</label>
+          <input type="radio" id="other" name="gender" value="Other" />
+          <label for="other">Other</label>
+        </div>
+
+        <p>Do you have insurance?</p>
+        <input type="radio" id="insurance-yes" name="insurance" value="Yes" />
+        <label for="insurance-yes">Yes</label>
+        <input type="radio" id="insurance-no" name="insurance" value="No" />
+        <label for="insurance-no">No</label>
+        <br />
+
+        <label>Have you ever had an EKG?</label>
+        <input type="radio" id="ekg-yes" name="ekg" value="Yes" />
+        <label for="ekg-yes">Yes</label>
+        <input type="radio" id="ekg-no" name="ekg" value="No" />
+        <label for="ekg-no">No</label>
+        <br />
+
+        <p>Check any known conditions:</p>
+        <input type="checkbox" id="anemia" name="conditions" value="Anemia" />
+        <label for="anemia">Anemia</label>
+        <input type="checkbox" id="asthma" name="conditions" value="Asthma" />
+        <label for="asthma">Asthma</label>
+        <input
+          type="checkbox"
+          id="diabetes"
+          name="conditions"
+          value="Diabetes"
+        />
+        <label for="diabetes">Diabetes</label>
+        <input
+          type="checkbox"
+          id="epilepsy"
+          name="conditions"
+          value="Epilepsy"
+        />
+        <label for="epilepsy">Epilepsy</label>
+        <input
+          type="checkbox"
+          id="highbloodpressure"
+          name="conditions"
+          value="High Blood Pressure"
+        />
+        <label for="highbloodpressure">High Blood Pressure</label>
+        <br />
+
+        <label for="symptoms">Describe any symptoms you have:</label>
+        <textarea id="symptoms" name="symptoms" rows="10" cols="30">
+Describe any symptoms you have
+      </textarea
+        >
+        <br />
+
+        <div class="slidecontainer">
+          <label for="slider">Rate your pain on a scale of 1-10</label>
+          <input
+            type="range"
+            id="slider"
+            name="slider"
+            min="1"
+            max="10"
+            value="1"
+            class="slider"
+          />
+        </div>
+      </fieldset>
+      <label style="margin: 1rem 0">
+        <input type="checkbox" id="remember-me" checked />
+        Remember me
+      </label>
+
+      <div class="buttons">
+        <input type="submit" value="Submit" />
+        <input type="reset" value="Reset" />
+        <input
+          type="button"
+          name="review"
+          id="review"
+          value="Review"
+          onclick="reviewInput()"
+        />
+      </div>
+    </form>
+    <section id="iframe-section">
+      <iframe
+        width="300"
+        height="300"
+        id="info-frame"
+        src="https://maps.google.com/maps?q=2001%20Commerce%20St,%20Houston,%20TX%2077002&output=embed"
+        title="Clinic Location"
+        sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+      ></iframe>
+    </section>
+    <footer>
+      <p>
+        &#169; 2025 Heart Health Clinic |
+        <a href="contact.html" target="_blank" rel="noopener noreferrer">
+          Contact Us!
+        </a>
+      </p>
+    </footer>
+
+    <script src="homework4.js"></script>
+  </body>
+</html>
