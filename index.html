@@ -1,30 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
     <title>Heart Health Clinic Signup</title>
     <link rel="stylesheet" href="extracredit.css" />
     <style>
+      /* Make sure errors appear in red */
       .error {
         color: red;
       }
     </style>
-    <!-- Load reCAPTCHA v3 -->
-    <script
-      src="https://www.google.com/recaptcha/api.js?render=6Lf1dywrAAAAACTOsCUEERa2OhJ6KS4rvkWH9qQ0x"
-      async
-      defer
-    ></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6Lf1dywrAAAAACTOsCUEERa2OhJ6KS4rvkWH9qQ0x"></script>
+
   </head>
   <body>
-    <!-- Restore‐session modal -->
-    <div id="restore-modal" class="modal" style="display: none">
-      <div class="modal-content">
-        <p>We found a saved form. Continue where you left off?</p>
-        <button id="restore-yes">Yes, fill it in</button>
-        <button id="restore-no">No, start fresh</button>
-      </div>
-    </div>
+    <!-- Restore‑session -->
+<div id="restore-modal" class="modal">
+  <div class="modal-content">
+    <p>We found a saved form. Continue where you left off?</p>
+    <button id="restore-yes">Yes, fill it in</button>
+    <button id="restore-no">No, start fresh</button>
+  </div>
+</div>
 
     <header>
       <table width="100%">
@@ -46,11 +42,18 @@
         </tr>
       </table>
       <h2>Please fill out this form:</h2>
-      <!-- dynamic greeting -->
+      <!-- dynamic greeting  -->
       <div id="greeting" style="margin-bottom: 1rem; font-weight: bold"></div>
     </header>
-
-    <form action="extracredit-thankyou.html" id="signup">
+    <div style="margin-bottom: 1rem;">
+      <label for="formProgress">Form Completion:</label>
+      <progress id="formProgress" value="0" max="100" style="width: 100%; height: 20px;"></progress>
+    </div>
+    
+    <form action="extracredit-thankyou.html"
+      id="signup"
+      onsubmit="return handleSubmit()"
+    >
       <fieldset>
         <legend>Personal Information</legend>
 
@@ -198,7 +201,6 @@
           id="state"
           placeholder="Choose your state"
           onblur="validateState()"
-          required
         />
         <datalist id="states">
           <option value="AL">Alabama</option>
@@ -309,6 +311,7 @@
               onblur="confirmPword()"
               oninput="confirmPword()"
               onfocus="confirmPword()"
+            
             />
             <span id="capsP2" class="caps-warn"></span>
             <span class="error" id="pword2-error"></span>
@@ -373,7 +376,8 @@
         <label for="symptoms">Describe any symptoms you have:</label>
         <textarea id="symptoms" name="symptoms" rows="10" cols="30">
 Describe any symptoms you have
-      </textarea>
+      </textarea
+        >
         <br />
 
         <div class="slidecontainer">
@@ -389,7 +393,6 @@ Describe any symptoms you have
           />
         </div>
       </fieldset>
-
       <label style="margin: 1rem 0">
         <input type="checkbox" id="remember-me" checked />
         Remember me
@@ -406,15 +409,9 @@ Describe any symptoms you have
           onclick="reviewInput()"
         />
       </div>
+      <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
 
-      <!-- Hidden field for reCAPTCHA token -->
-      <input
-        type="hidden"
-        name="g-recaptcha-response"
-        id="g-recaptcha-response"
-      />
     </form>
-
     <section id="iframe-section">
       <iframe
         width="300"
@@ -425,22 +422,18 @@ Describe any symptoms you have
         sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
       ></iframe>
     </section>
-
     <footer>
       <p>
         &#169; 2025 Heart Health Clinic |
-        <a href="contact.html" target="_blank" rel="noopener noreferrer"
-          >Contact Us!</a
-        >
+        <a href="contact.html" target="_blank" rel="noopener noreferrer">
+          Contact Us!
+        </a>
       </p>
     </footer>
 
-    <!-- Your existing validation & helper scripts -->
     <script src="extracredit.js"></script>
-
-    <!-- Review-modal -->
-    <div id="review-modal" class="modal" style="display: none">
+    <div id="review-modal" class="modal">
       <div class="modal-content" id="review-container"></div>
-    </div>
+    </div>    
   </body>
 </html>
