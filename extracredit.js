@@ -316,12 +316,61 @@ function validateForm() {
 // —————————————————————————
 // REVIEW INPUT (unchanged)
 // —————————————————————————
+// REVIEW INPUT – full implementation
 function reviewInput() {
+  // 1) don’t review if there are validation errors
   if (!validateForm()) {
-    alert("Please fix errors before reviewing.");
+    alert("Please fix the errors before reviewing.");
     return;
   }
-  // ... your existing review logic ...
+
+  // 2) gather all filled‐in fields (skip sensitive ones)
+  const skip = ["pword", "con_pword", "ssn"];
+  const rows = [];
+  document
+    .querySelectorAll("#signup input, #signup select, #signup textarea")
+    .forEach((el) => {
+      if (!el.name || skip.includes(el.id)) return;
+
+      let val = "";
+      if (el.type === "checkbox") {
+        if (!el.checked) return;
+        val = el.value;
+      } else if (el.type === "radio") {
+        if (!el.checked) return;
+        val = el.value;
+      } else {
+        val = el.value.trim();
+        if (!val) return;
+      }
+
+      // find the corresponding label text
+      const lbl = document.querySelector(`label[for="${el.id}"]`);
+      const labelText = lbl ? lbl.textContent.replace(/:$/, "") : el.name;
+      rows.push(`<tr><td>${labelText}</td><td>${val}</td></tr>`);
+    });
+
+  // 3) build the modal’s inner HTML
+  const modal = document.getElementById("review-modal");
+  const holder = document.getElementById("review-container");
+  holder.innerHTML = `
+    <h3>Check Your Entries</h3>
+    <table class="output">
+      ${rows.join("")}
+    </table>
+    <button id="confirmSubmit">Submit</button>
+    <button id="editForm">Go Back</button>
+  `;
+  modal.style.display = "block";
+
+  // 4) wire up the two buttons
+  document.getElementById("editForm").onclick = () => {
+    modal.style.display = "none";
+  };
+  document.getElementById("confirmSubmit").onclick = () => {
+    modal.style.display = "none";
+    document.getElementById("signup").submit();
+  };
 }
 
 // —————————————————————————
