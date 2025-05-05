@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta charset="UTF-8" />
     <title>Heart Health Clinic Signup</title>
     <link rel="stylesheet" href="extracredit.css" />
     <style>
@@ -9,8 +10,23 @@
         color: red;
       }
     </style>
+    <!-- Load reCAPTCHA v3 -->
+    <script
+      src="https://www.google.com/recaptcha/api.js?render=6Lf1dywrAAAAACTOsCUEERa2OhJ6KS4rvkWH9qQ0x"
+      async
+      defer
+    ></script>
   </head>
   <body>
+    <!-- Restore‐session modal -->
+    <div id="restore-modal" class="modal" style="display: none">
+      <div class="modal-content">
+        <p>We found a saved form. Continue where you left off?</p>
+        <button id="restore-yes">Yes, fill it in</button>
+        <button id="restore-no">No, start fresh</button>
+      </div>
+    </div>
+
     <header>
       <table width="100%">
         <tr>
@@ -31,14 +47,11 @@
         </tr>
       </table>
       <h2>Please fill out this form:</h2>
-      <!-- new: dynamic greeting goes here -->
+      <!-- dynamic greeting -->
       <div id="greeting" style="margin-bottom: 1rem; font-weight: bold"></div>
     </header>
-  
-    <form action="extracredit-thankyou.html"
-      id="signup"
-      onsubmit="return handleSubmit()"
-    >
+
+    <form action="extracredit-thankyou.html" id="signup">
       <fieldset>
         <legend>Personal Information</legend>
 
@@ -186,12 +199,58 @@
           id="state"
           placeholder="Choose your state"
           onblur="validateState()"
+          required
         />
         <datalist id="states">
           <option value="AL">Alabama</option>
           <option value="AK">Alaska</option>
           <option value="AZ">Arizona</option>
-          <!-- ... other states omitted for brevity ... -->
+          <option value="AR">Arkansas</option>
+          <option value="CA">California</option>
+          <option value="CO">Colorado</option>
+          <option value="CT">Connecticut</option>
+          <option value="DE">Delaware</option>
+          <option value="FL">Florida</option>
+          <option value="GA">Georgia</option>
+          <option value="HI">Hawaii</option>
+          <option value="ID">Idaho</option>
+          <option value="IL">Illinois</option>
+          <option value="IN">Indiana</option>
+          <option value="IA">Iowa</option>
+          <option value="KS">Kansas</option>
+          <option value="KY">Kentucky</option>
+          <option value="LA">Louisiana</option>
+          <option value="ME">Maine</option>
+          <option value="MD">Maryland</option>
+          <option value="MA">Massachusetts</option>
+          <option value="MI">Michigan</option>
+          <option value="MN">Minnesota</option>
+          <option value="MS">Mississippi</option>
+          <option value="MO">Missouri</option>
+          <option value="MT">Montana</option>
+          <option value="NE">Nebraska</option>
+          <option value="NV">Nevada</option>
+          <option value="NH">New Hampshire</option>
+          <option value="NJ">New Jersey</option>
+          <option value="NM">New Mexico</option>
+          <option value="NY">New York</option>
+          <option value="NC">North Carolina</option>
+          <option value="ND">North Dakota</option>
+          <option value="OH">Ohio</option>
+          <option value="OK">Oklahoma</option>
+          <option value="OR">Oregon</option>
+          <option value="PA">Pennsylvania</option>
+          <option value="RI">Rhode Island</option>
+          <option value="SC">South Carolina</option>
+          <option value="SD">South Dakota</option>
+          <option value="TN">Tennessee</option>
+          <option value="TX">Texas</option>
+          <option value="UT">Utah</option>
+          <option value="VT">Vermont</option>
+          <option value="VA">Virginia</option>
+          <option value="WA">Washington</option>
+          <option value="WV">West Virginia</option>
+          <option value="WI">Wisconsin</option>
           <option value="WY">Wyoming</option>
         </datalist>
         <span class="error" id="state-error"></span>
@@ -237,6 +296,7 @@
               oninput="validatePword()"
               onfocus="validatePword()"
             />
+            <span id="capsP1" class="caps-warn"></span>
             <span class="error" id="pword-error"></span>
             <br />
 
@@ -251,6 +311,7 @@
               oninput="confirmPword()"
               onfocus="confirmPword()"
             />
+            <span id="capsP2" class="caps-warn"></span>
             <span class="error" id="pword2-error"></span>
           </div>
         </div>
@@ -330,6 +391,7 @@ Describe any symptoms you have
           />
         </div>
       </fieldset>
+
       <label style="margin: 1rem 0">
         <input type="checkbox" id="remember-me" checked />
         Remember me
@@ -346,7 +408,15 @@ Describe any symptoms you have
           onclick="reviewInput()"
         />
       </div>
+
+      <!-- Hidden field for reCAPTCHA token -->
+      <input
+        type="hidden"
+        name="g-recaptcha-response"
+        id="g-recaptcha-response"
+      />
     </form>
+
     <section id="iframe-section">
       <iframe
         width="300"
@@ -357,15 +427,22 @@ Describe any symptoms you have
         sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
       ></iframe>
     </section>
+
     <footer>
       <p>
         &#169; 2025 Heart Health Clinic |
-        <a href="contact.html" target="_blank" rel="noopener noreferrer">
-          Contact Us!
-        </a>
+        <a href="contact.html" target="_blank" rel="noopener noreferrer"
+          >Contact Us!</a
+        >
       </p>
     </footer>
 
+    <!-- Your existing validation & helper scripts -->
     <script src="extracredit.js"></script>
+
+    <!-- Review-modal -->
+    <div id="review-modal" class="modal" style="display: none">
+      <div class="modal-content" id="review-container"></div>
+    </div>
   </body>
 </html>
