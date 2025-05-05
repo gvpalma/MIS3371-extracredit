@@ -1,341 +1,47 @@
+// extracredit.js
 
-// Show today's date //
-
-const currentDate = new Date();
-document.getElementById("today").innerHTML = currentDate.toLocaleDateString();
-
-// Validate Entire Form //
-
-function validateForm() {
-  let isValid = true;
-
-  // If any specialized function returns false, flip isValid to false
-  if (!validateFirstname()) isValid = false;
-  if (!validateMiddleinit()) isValid = false;
-  if (!validateLastname()) isValid = false;
-  if (!validateDob()) isValid = false;
-  if (!validateSsn()) isValid = false;
-  if (!validateAddr1()) isValid = false;
-  if (!validateCity()) isValid = false;
-  if (!validateState()) isValid = false;
-  if (!validateZip()) isValid = false;
-  if (!validatePnumber()) isValid = false;
-  if (!validateEmail()) isValid = false;
-  if (!validateUserid()) isValid = false;
-  if (!validatePword()) isValid = false;
-  if (!confirmPword()) isValid = false;
-
-  // If all checks pass, isValid remains true. If any fail, isValid is false.
-  return isValid;
+// —————————————————————————
+// LOCAL-STORAGE UTILITIES
+// —————————————————————————
+function saveField(key, value) {
+  localStorage.setItem(key, value);
 }
 
-// Validate First Name //
-function validateFirstname() {
-  const firstNameInput = document.getElementById("firstname");
-  const errorSpan = document.getElementById("firstname-error");
-  const pattern = /^[a-zA-Z']{1,30}$/;
-  const value = firstNameInput.value.trim();
-
-  if (value === "") {
-    errorSpan.textContent = "First name cannot be blank.";
-    return false;
-  } else if (!pattern.test(value)) {
-    errorSpan.textContent = "Invalid first name (letters/apostrophes only).";
-    return false;
-  } else {
-    errorSpan.textContent = "";
-    return true;
-  }
+function clearStoredForm() {
+  Object.keys(localStorage)
+    .filter((k) => k.startsWith("ec_"))
+    .forEach((k) => localStorage.removeItem(k));
 }
 
-// Validate Middle Initial (optional) //
-function validateMiddleinit() {
-  const middleInput = document.getElementById("middleinit");
-  const errorSpan = document.getElementById("middleinit-error");
-  const pattern = /^[a-zA-Z']?$/; // 0 or 1 letter
-  const value = middleInput.value.trim();
-
-  // It's optional, so only check pattern if not blank
-  if (value !== "" && !pattern.test(value)) {
-    errorSpan.textContent = "Middle initial must be 1 letter (optional).";
-    return false;
-  } else {
-    errorSpan.textContent = "";
-    return true;
-  }
+function loadStoredForm() {
+  document
+    .querySelectorAll("#signup input, #signup textarea, #signup select")
+    .forEach((el) => {
+      const v = localStorage.getItem("ec_" + el.id);
+      if (v !== null) {
+        if (el.type === "checkbox" || el.type === "radio") {
+          el.checked = v === "true";
+        } else {
+          el.value = v;
+        }
+      }
+    });
 }
 
-// Validate Last Name //
-function validateLastname() {
-  const lastNameInput = document.getElementById("lastname");
-  const errorSpan = document.getElementById("lastname-error");
-  const pattern = /^[a-zA-Z']{1,30}$/;
-  const value = lastNameInput.value.trim();
-
-  if (value === "") {
-    errorSpan.textContent = "Last name cannot be blank.";
-    return false;
-  } else if (!pattern.test(value)) {
-    errorSpan.textContent = "Invalid last name (letters/apostrophes only).";
-    return false;
-  } else {
-    errorSpan.textContent = "";
-    return true;
+/* write every change immediately */
+document.addEventListener("input", (e) => {
+  const el = e.target;
+  if (el.form && el.id) {
+    saveField(
+      "ec_" + el.id,
+      el.type === "checkbox" || el.type === "radio" ? el.checked : el.value
+    );
   }
-}
+});
 
-// Validate DOB //
-function validateDob() {
-  const dobElement = document.getElementById("dob");
-  const dobError = document.getElementById("dob-error");
-  const dobValue = new Date(dobElement.value);
-  const current = new Date();
-  const minValidDate = new Date();
-  minValidDate.setFullYear(current.getFullYear() - 120);
-
-  if (dobElement.value.trim() === "") {
-    dobError.textContent = "Date of Birth cannot be blank.";
-    return false;
-  }
-  if (dobValue > current) {
-    dobError.textContent = "Date can't be in the future.";
-    return false;
-  } else if (dobValue < minValidDate) {
-    dobError.textContent = "Date can't be more than 120 years ago.";
-    return false;
-  } else {
-    dobError.textContent = "";
-    return true;
-  }
-}
-
-// Validate SSN //
-function validateSsn() {
-  const ssn = document.getElementById("ssn").value.trim();
-  const errorSpan = document.getElementById("ssn-error");
-  const ssnPattern = /^[0-9]{3}-?[0-9]{2}-?[0-9]{4}$/;
-
-  if (ssn === "") {
-    errorSpan.textContent = "SSN cannot be blank.";
-    return false;
-  } else if (!ssnPattern.test(ssn)) {
-    errorSpan.textContent = "Please enter a valid SSN (###-##-####).";
-    return false;
-  } else {
-    errorSpan.textContent = "";
-    return true;
-  }
-}
-
-// Validate Address Line 1 //
-function validateAddr1() {
-  const addr1 = document.getElementById("addr1");
-  const errorSpan = document.getElementById("addr1-error");
-  if (addr1.value.trim() === "") {
-    errorSpan.textContent = "Address Line 1 cannot be blank.";
-    return false;
-  } else {
-    errorSpan.textContent = "";
-    return true;
-  }
-}
-
-// Validate City //
-function validateCity() {
-  const city = document.getElementById("city");
-  const errorSpan = document.getElementById("city-error");
-  if (city.value.trim() === "") {
-    errorSpan.textContent = "City cannot be blank.";
-    return false;
-  } else {
-    errorSpan.textContent = "";
-    return true;
-  }
-}
-// Validate State//
-function validateState() {
-  const stateInput = document.getElementById("state");
-  const errorSpan = document.getElementById("state-error");
-  if (stateInput.value.trim() === "") {
-    errorSpan.textContent = "State cannot be blank.";
-    return false;
-  } else {
-    errorSpan.textContent = "";
-    return true;
-  }
-}
-
-// Validate Zip //
-function validateZip() {
-  const zipInput = document.getElementById("zip");
-  const zipError = document.getElementById("zip-error");
-  let zip = zipInput.value.replace(/[^\d-]/g, "");
-
-  if (zip === "") {
-    zipError.textContent = "Zip code cannot be blank.";
-    return false;
-  }
-
-  // Format ZIP + optional 4
-  if (zip.length > 5) {
-    zip = zip.slice(0, 5) + "-" + zip.slice(5, 9);
-  } else {
-    zip = zip.slice(0, 5);
-  }
-  zipInput.value = zip;
-  zipError.textContent = "";
-  return true;
-}
-
-// Validate Phone Number//
-function validatePnumber() {
-  const phoneInput = document.getElementById("pnumber");
-  const phoneError = document.getElementById("pnumber-error");
-  const cleaned = phoneInput.value.replace(/\D/g, "");
-
-  if (cleaned.length === 0) {
-    phoneError.textContent = "Phone number cannot be blank.";
-    return false;
-  } else if (cleaned.length < 10) {
-    phoneError.textContent = "Enter a valid phone number.";
-    return false;
-  } else {
-    phoneError.textContent = "";
-  }
-
-  // Format as XXX-XXX-XXXX
-  const formatted = cleaned.replace(/^(\d{3})(\d{3})(\d{4}).*/, "$1-$2-$3");
-  phoneInput.value = formatted;
-  return true;
-}
-
-// Validate Email //
-function validateEmail() {
-  const emailInput = document.getElementById("email");
-  const emailError = document.getElementById("email-error");
-  const pattern = /^\w+([.-]?\w+)@\w+([.-]?\w+)(\.\w{2,20})+$/;
-  const value = emailInput.value.trim();
-
-  if (value === "") {
-    emailError.textContent = "Email cannot be blank.";
-    return false;
-  } else if (!pattern.test(value)) {
-    emailError.textContent = "Please enter a valid email address.";
-    return false;
-  } else {
-    emailError.textContent = "";
-    return true;
-  }
-}
-
-// Validate Username //
-function validateUserid() {
-  const useridInput = document.getElementById("userid");
-  const errorSpan = document.getElementById("userid-error");
-  const value = useridInput.value.trim();
-
-  if (value === "") {
-    errorSpan.textContent = "Username cannot be blank.";
-    return false;
-  } else {
-    errorSpan.textContent = "";
-    return true;
-  }
-}
-
-
-// Validate Password //
-function validatePword() {
-  const pword = document.getElementById("pword");
-  const errorSpan = document.getElementById("pword-error");
-  const value = pword.value;
-
-  // Example rule: must be >= 4 characters
-  if (value.trim().length < 4) {
-    errorSpan.textContent = "Password must be at least 4 characters.";
-    return false;
-  } else {
-    errorSpan.textContent = "";
-    return true;
-  }
-}
-
-// Confirm Password (second field) //
-function confirmPword() {
-  const pword = document.getElementById("pword").value;
-  const conPword = document.getElementById("con_pword").value;
-  const errorSpan2 = document.getElementById("pword2-error");
-
-  if (conPword.trim() === "") {
-    errorSpan2.textContent = "Please confirm your password.";
-    return false;
-  } else if (pword !== conPword) {
-    errorSpan2.textContent = "Passwords do not match.";
-    return false;
-  } else {
-    errorSpan2.textContent = "";
-    return true;
-  }
-}
-
-// Review Input //
-function reviewInput() {
-  const firstname = document.getElementById("firstname").value;
-  const middleinit = document.getElementById("middleinit").value;
-  const lastname = document.getElementById("lastname").value;
-  const dob = document.getElementById("dob").value;
-  const ssn = document.getElementById("ssn").value;
-  const addr1 = document.getElementById("addr1").value;
-  const addr2 = document.getElementById("addr2").value;
-  const city = document.getElementById("city").value;
-  const state = document.getElementById("state").value;
-  const zip = document.getElementById("zip").value;
-  const phone = document.getElementById("pnumber").value;
-  const email = document.getElementById("email").value;
-  const userid = document.getElementById("userid").value;
-  const gender = document.querySelector('input[name="gender"]:checked');
-  const insurance = document.querySelector('input[name="insurance"]:checked');
-  const ekg = document.querySelector('input[name="ekg"]:checked');
-  const pain = document.getElementById("slider").value;
-  const symptoms = document.getElementById("symptoms").value;
-
-  //checkbox values
-  const conditions = [];
-  if (document.getElementById("anemia").checked) conditions.push("Anemia");
-  if (document.getElementById("asthma").checked) conditions.push("Asthma");
-  if (document.getElementById("diabetes").checked) conditions.push("Diabetes");
-  if (document.getElementById("epilepsy").checked) conditions.push("Epilepsy");
-  if (document.getElementById("highbloodpressure").checked)
-    conditions.push("High Blood Pressure");
-
-  // Build the message
-  let message = "*** Please Review Your Information ***\n\n";
-  message += `First Name: ${firstname}\n`;
-  message += `Middle Initial: ${middleinit}\n`;
-  message += `Last Name: ${lastname}\n`;
-  message += `Date of Birth: ${dob}\n`;
-  message += `SSN: ${ssn}\n`;
-  message += `Address Line 1: ${addr1}\n`;
-  message += `Address Line 2: ${addr2}\n`;
-  message += `City: ${city}\n`;
-  message += `State: ${state}\n`;
-  message += `Zip Code: ${zip}\n`;
-  message += `Phone Number: ${phone}\n`;
-  message += `Email: ${email}\n`;
-  message += `Username: ${userid}\n`;
-  message += `Gender: ${gender ? gender.value : "Not selected"}\n`;
-  message += `Has Insurance: ${insurance ? insurance.value : "Not selected"}\n`;
-  message += `Had EKG: ${ekg ? ekg.value : "Not selected"}\n`;
-  message += `Pain Level: ${pain}/10\n`;
-  message += `Symptoms: ${symptoms}\n`;
-  message += `Known Conditions: ${
-    conditions.length > 0 ? conditions.join(", ") : "None"
-  }\n`;
-
-  alert(message);
-}
-
-// COOKIE UTILS //
+// —————————————————————————
+// COOKIE UTILITIES
+// —————————————————————————
 function setCookie(name, value, hours) {
   const d = new Date();
   d.setTime(d.getTime() + hours * 3600 * 1000);
@@ -354,7 +60,9 @@ function deleteCookie(name) {
   document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/`;
 }
 
-// GREETING / NEW-USER LOGIC // 
+// —————————————————————————
+// GREETING / NEW-USER LOGIC
+// —————————————————————————
 function updateGreeting() {
   const greetingDiv = document.getElementById("greeting");
   const firstName = getCookie("firstName");
@@ -362,7 +70,6 @@ function updateGreeting() {
     greetingDiv.innerHTML =
       `Welcome back, ${firstName}. ` +
       `<a href="#" id="notUserLink">Not ${firstName}? Start as new user.</a>`;
-
     document.getElementById("notUserLink").addEventListener("click", (e) => {
       e.preventDefault();
       newUser();
@@ -375,36 +82,305 @@ function updateGreeting() {
 function newUser() {
   deleteCookie("firstName");
   document.getElementById("signup").reset();
+  clearStoredForm();
   updateGreeting();
 }
 
-// OVERRIDE SUBMIT TO HANDLE “REMEMBER ME” //
-function handleSubmit() {
-  // first run your existing validations
-  if (!validateForm()) return false;
-
-  // if validation passed, check “remember me”
-  const firstName = document.getElementById("firstname").value.trim();
-  const remember = document.getElementById("remember-me").checked;
-
-  if (remember && firstName) {
-    // set cookie to expire in 48 hours
-    setCookie("firstName", firstName, 48);
-  } else {
-    // clear any existing cookie
-    deleteCookie("firstName");
+// —————————————————————————
+// VALIDATION FUNCTIONS
+// —————————————————————————
+function validateFirstname() {
+  const inp = document.getElementById("firstname"),
+    err = document.getElementById("firstname-error"),
+    v = inp.value.trim(),
+    re = /^[a-zA-Z']{1,30}$/;
+  if (!v) {
+    err.textContent = "First name cannot be blank.";
+    return false;
+  } else if (!re.test(v)) {
+    err.textContent = "Invalid first name (letters/apostrophes only).";
+    return false;
   }
-
-  // allow form to submit
+  err.textContent = "";
   return true;
 }
 
-// ON PAGE LOAD // 
-document.addEventListener("DOMContentLoaded", () => {
-  // show the date (your existing code)
-  const currentDate = new Date();
-  document.getElementById("today").innerHTML = currentDate.toLocaleDateString();
+function validateMiddleinit() {
+  const inp = document.getElementById("middleinit"),
+    err = document.getElementById("middleinit-error"),
+    v = inp.value.trim(),
+    re = /^[a-zA-Z']?$/;
+  if (v && !re.test(v)) {
+    err.textContent = "Middle initial must be 1 letter (optional).";
+    return false;
+  }
+  err.textContent = "";
+  return true;
+}
 
-  // initialize greeting (checks cookie)
+function validateLastname() {
+  const inp = document.getElementById("lastname"),
+    err = document.getElementById("lastname-error"),
+    v = inp.value.trim(),
+    re = /^[a-zA-Z']{1,30}$/;
+  if (!v) {
+    err.textContent = "Last name cannot be blank.";
+    return false;
+  } else if (!re.test(v)) {
+    err.textContent = "Invalid last name (letters/apostrophes only).";
+    return false;
+  }
+  err.textContent = "";
+  return true;
+}
+
+function validateDob() {
+  const inp = document.getElementById("dob"),
+    err = document.getElementById("dob-error"),
+    v = inp.value,
+    d = new Date(v),
+    now = new Date(),
+    oldest = new Date();
+  oldest.setFullYear(now.getFullYear() - 120);
+
+  if (!v) {
+    err.textContent = "Date of Birth cannot be blank.";
+    return false;
+  } else if (d > now) {
+    err.textContent = "Date can't be in the future.";
+    return false;
+  } else if (d < oldest) {
+    err.textContent = "Date can't be more than 120 years ago.";
+    return false;
+  }
+  err.textContent = "";
+  return true;
+}
+
+function validateSsn() {
+  const inp = document.getElementById("ssn"),
+    err = document.getElementById("ssn-error"),
+    v = inp.value.trim(),
+    re = /^[0-9]{3}-?[0-9]{2}-?[0-9]{4}$/;
+  if (!v) {
+    err.textContent = "SSN cannot be blank.";
+    return false;
+  } else if (!re.test(v)) {
+    err.textContent = "Please enter a valid SSN (###-##-####).";
+    return false;
+  }
+  err.textContent = "";
+  return true;
+}
+
+function validateAddr1() {
+  const inp = document.getElementById("addr1"),
+    err = document.getElementById("addr1-error");
+  if (!inp.value.trim()) {
+    err.textContent = "Address Line 1 cannot be blank.";
+    return false;
+  }
+  err.textContent = "";
+  return true;
+}
+
+function validateCity() {
+  const inp = document.getElementById("city"),
+    err = document.getElementById("city-error");
+  if (!inp.value.trim()) {
+    err.textContent = "City cannot be blank.";
+    return false;
+  }
+  err.textContent = "";
+  return true;
+}
+
+function validateState() {
+  const inp = document.getElementById("state"),
+    err = document.getElementById("state-error");
+  if (!inp.value.trim()) {
+    err.textContent = "State cannot be blank.";
+    return false;
+  }
+  err.textContent = "";
+  return true;
+}
+
+function validateZip() {
+  const inp = document.getElementById("zip"),
+    err = document.getElementById("zip-error");
+  let v = inp.value.replace(/[^\d]/g, "");
+  if (!v) {
+    err.textContent = "Zip code cannot be blank.";
+    return false;
+  }
+  // format 12345-6789
+  if (v.length > 5) v = v.slice(0, 5) + "-" + v.slice(5, 9);
+  inp.value = v;
+  err.textContent = "";
+  return true;
+}
+
+function validatePnumber() {
+  const inp = document.getElementById("pnumber"),
+    err = document.getElementById("pnumber-error"),
+    digits = inp.value.replace(/\D/g, "");
+  if (!digits) {
+    err.textContent = "Phone number cannot be blank.";
+    return false;
+  } else if (digits.length < 10) {
+    err.textContent = "Enter a valid phone number.";
+    return false;
+  }
+  // format XXX-XXX-XXXX
+  inp.value = digits.replace(/^(\d{3})(\d{3})(\d{4}).*/, "$1-$2-$3");
+  err.textContent = "";
+  return true;
+}
+
+function validateEmail() {
+  const inp = document.getElementById("email"),
+    err = document.getElementById("email-error"),
+    v = inp.value.trim(),
+    re = /^\w+([.-]?\w+)@\w+([.-]?\w+)(\.\w{2,20})+$/;
+  if (!v) {
+    err.textContent = "Email cannot be blank.";
+    return false;
+  } else if (!re.test(v)) {
+    err.textContent = "Please enter a valid email address.";
+    return false;
+  }
+  err.textContent = "";
+  return true;
+}
+
+function validateUserid() {
+  const inp = document.getElementById("userid"),
+    err = document.getElementById("userid-error"),
+    v = inp.value.trim();
+  if (!v) {
+    err.textContent = "Username cannot be blank.";
+    return false;
+  }
+  err.textContent = "";
+  return true;
+}
+
+function validatePword() {
+  const inp = document.getElementById("pword"),
+    err = document.getElementById("pword-error"),
+    v = inp.value;
+  if (v.trim().length < 4) {
+    err.textContent = "Password must be at least 4 characters.";
+    return false;
+  }
+  err.textContent = "";
+  return true;
+}
+
+function confirmPword() {
+  const p = document.getElementById("pword").value,
+    c = document.getElementById("con_pword").value,
+    err = document.getElementById("pword2-error");
+  if (!c) {
+    err.textContent = "Please confirm your password.";
+    return false;
+  } else if (p !== c) {
+    err.textContent = "Passwords do not match.";
+    return false;
+  }
+  err.textContent = "";
+  return true;
+}
+
+// Run all validators
+function validateForm() {
+  let ok = true;
+  if (!validateFirstname()) ok = false;
+  if (!validateMiddleinit()) ok = false;
+  if (!validateLastname()) ok = false;
+  if (!validateDob()) ok = false;
+  if (!validateSsn()) ok = false;
+  if (!validateAddr1()) ok = false;
+  if (!validateCity()) ok = false;
+  if (!validateState()) ok = false;
+  if (!validateZip()) ok = false;
+  if (!validatePnumber()) ok = false;
+  if (!validateEmail()) ok = false;
+  if (!validateUserid()) ok = false;
+  if (!validatePword()) ok = false;
+  if (!confirmPword()) ok = false;
+  return ok;
+}
+
+// —————————————————————————
+// REVIEW INPUT (unchanged)
+// —————————————————————————
+function reviewInput() {
+  if (!validateForm()) {
+    alert("Please fix errors before reviewing.");
+    return;
+  }
+  // ... your existing review logic ...
+}
+
+// —————————————————————————
+// CAPS-LOCK DETECTION
+// —————————————————————————
+["pword", "con_pword"].forEach((id, idx) => {
+  const warn = document.getElementById(`capsP${idx + 1}`);
+  document.getElementById(id).addEventListener("keyup", (e) => {
+    warn.textContent = e.getModifierState("CapsLock") ? "Caps Lock is ON" : "";
+  });
+});
+
+// —————————————————————————
+// DOMContentLoaded: setup page & form handler
+// —————————————————————————
+document.addEventListener("DOMContentLoaded", () => {
+  // Today’s date
+  document.getElementById("today").textContent =
+    new Date().toLocaleDateString();
+
+  // Greeting & restore
   updateGreeting();
+  const hasSaved = Object.keys(localStorage).some((k) => k.startsWith("ec_"));
+  if (hasSaved) {
+    const modal = document.getElementById("restore-modal");
+    modal.style.display = "block";
+    document.getElementById("restore-yes").onclick = () => {
+      modal.style.display = "none";
+      loadStoredForm();
+    };
+    document.getElementById("restore-no").onclick = () => {
+      modal.style.display = "none";
+      clearStoredForm();
+    };
+  }
+
+  // Hook form submit: validate → cookie → recaptcha → submit
+  const form = document.getElementById("signup");
+  grecaptcha.ready(() => {
+    form.addEventListener("submit", (evt) => {
+      evt.preventDefault();
+      // 1) run validation
+      if (!validateForm()) return;
+      // 2) remember-me cookie
+      const fn = document.getElementById("firstname").value.trim();
+      if (document.getElementById("remember-me").checked && fn) {
+        setCookie("firstName", fn, 48);
+      } else {
+        deleteCookie("firstName");
+      }
+      // 3) get recaptcha token, then submit
+      grecaptcha
+        .execute("6Lf1dywrAAAAACTOsCUEERa2OhJ6KS4rvkWH9qQ0x", {
+          action: "submit",
+        })
+        .then((token) => {
+          document.getElementById("g-recaptcha-response").value = token;
+          form.submit();
+        });
+    });
+  });
 });
